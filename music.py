@@ -2,12 +2,10 @@ import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
 from pygame import mixer
-import pygame
 from PIL import ImageTk,Image
 
 root = Tk()  
-canvas = Canvas(root, width = 300, height = 300)  
-canvas.pack() 
+ 
 class MusicPlayer:
     def __init__(self, window ):
         window.geometry('240x400'); window.title('NEXUS Player'); window.resizable(0,0)
