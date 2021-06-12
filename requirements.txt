@@ -1,3 +1,5 @@
 Tk
 pillow
 pygame
+ttkthemes
+stagger
