@@ -116,7 +116,7 @@ p1 = ttk.Progressbar(root, length=200, cursor='spider',
                      mode="determinate",
                      orient=tk.HORIZONTAL)
 p1.pack(pady=185)
-btn = ttk.Button(root,text="Start",command=increment).pack(pady=0)
+#btn = ttk.Button(root,text="Start",command=increment).pack(pady=0)
 scale = ttk.Scale(root, from_=100, to=0,length=140,orient=VERTICAL, command=set_vol)
 scale.place(x=20,y=225)
 scale.set(50)  # implement the default value of scale when music player starts
