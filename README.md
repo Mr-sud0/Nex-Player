@@ -3,11 +3,11 @@ Simple Music player written in Python
 
 ## Dependencies required to run this.
 
-* Tk
-* pillow
-* pygame
 * ttkthemes
 * stagger
+* pygame
+* mutagen
+* Pillow
 
 ## Installing the dependencies
 ```
