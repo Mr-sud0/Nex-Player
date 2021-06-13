@@ -6,32 +6,60 @@ import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
 from pygame import mixer
+from mutagen.mp3 import MP3
 from PIL import ImageTk
-from tkinter import ttk  # Normal Tkinter.* widgets are not themed!
+from tkinter import ttk# Normal Tkinter.* widgets are not themed!
+from tkinter.ttk import *
 from ttkthemes import ThemedTk
-
-
-root = ThemedTk(theme="arc")
+import time 
+global song
+song = None
+tag=stagger.default_tag()
+root = ThemedTk(theme="adapta")
 root.config(bg='#F0FFFF')
-
 def set_vol(val):
     volume = float(val) / 100
     mixer.init()
     mixer.music.set_volume(volume)
-    
+
+
+
+#def play_time():
+#    current_time = pygame.mixer.music.get_pos()
+#    status_bar.config(text=current_time)
 class MusicPlayer:
     def __init__(self, window ):
-        window.geometry('240x400'); window.title('NEXUS Player'); window.resizable(300,600)
-        Load = ttk.Button(window, text = 'Load',  width = 10, command = self.load)
-        Play = ttk.Button(window, text = 'Play',  width = 10, command = self.play)
-        Pause = ttk.Button(window,text = 'Pause',  width = 10, command = self.pause)
-        Stop = ttk.Button(window ,text = 'Stop',  width = 10, command = self.stop)
+        window.geometry('240x400'); window.title('NEXUS Player'); window.resizable(100,100)
+
+        loadimg = PIL.Image.open("folder.png")
+        loadimg = loadimg.resize((35, 35))
+        self.load_p = ImageTk.PhotoImage(loadimg)
+        Load = Button(window, image=self.load_p,width = 0, command = self.load)
+
+        playimg = PIL.Image.open("play.png")
+        playimg = playimg.resize((35, 35))
+        self.play_p = ImageTk.PhotoImage(playimg)
+        Play = Button(window, image=self.play_p, width = 0, command = self.play)
+
+        pauseimg = PIL.Image.open("pause.png")
+        pauseimg = pauseimg.resize((35, 35))
+        self.pause_p = ImageTk.PhotoImage(pauseimg)
+        Pause = Button(window, image=self.pause_p, width = 0, command = self.pause)
+
+        stopimg = PIL.Image.open("stop.png")
+        stopimg = stopimg.resize((35, 35))
+        self.stop_p = ImageTk.PhotoImage(stopimg)
+        Stop = Button(window, image=self.stop_p, width = 0, command = self.stop)
+
         volume = PIL.Image.open("speaker.png")
         volume = volume.resize((20, 20))
         self.vol = ImageTk.PhotoImage(volume)
         p_vol= ttk.Label(root, image = self.vol).place(x=20,y=365)
-        Load.place(x=80,y=220);Play.place(x=80,y=260);Pause.place(x=80,y=300);Stop.place(x=80,y=340) 
+
+        Load.place(x=100,y=215);Play.place(x=100,y=260);Pause.place(x=100,y=305);Stop.place(x=100,y=350) 
+
         self.music_file = False
+
         self.playing_state = False
 
     def load(self):
@@ -43,6 +71,11 @@ class MusicPlayer:
         name=tk.Label(text = "                                                                                                                ").place(x=50,y=200)
         self.music_file = filedialog.askopenfilename(parent=root, title='Choose an audio File', filetypes=[(".mp3, .flac, .wav, .ogg", "*.mp3; *.flac;*.wav;*.ogg")])
         song = self.music_file
+        song_mut = MP3(song)
+        song_len = song_mut.info.length / 60
+        #ttk.Progressbar(root,length=220,orient='horizontal',value=50,mode='determinate').pack(pady=185)
+
+        #print(song_len)
         mp3 = stagger.read_tag(self.music_file)
         by_data = mp3[stagger.id3.APIC][0].data
         im = io.BytesIO(by_data)
@@ -75,8 +108,15 @@ class MusicPlayer:
     def stop(self):
         mixer.music.stop()
 
-
-ttk.Progressbar(root,length=220,orient='horizontal',value=40,mode='determinate').pack(pady=185)
+def increment(*args):
+    p1["value"] = mixer.music.get_pos()
+    root.update()
+    time.sleep(0.1)
+p1 = ttk.Progressbar(root, length=200, cursor='spider',
+                     mode="determinate",
+                     orient=tk.HORIZONTAL)
+p1.pack(pady=185)
+btn = ttk.Button(root,text="Start",command=increment).pack(pady=0)
 scale = ttk.Scale(root, from_=100, to=0,length=140,orient=VERTICAL, command=set_vol)
 scale.place(x=20,y=225)
 scale.set(50)  # implement the default value of scale when music player starts
