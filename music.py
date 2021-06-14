@@ -1,3 +1,4 @@
+###################.......DEPENDENCIES MODULES.......###################
 import io
 import os
 import PIL.Image
@@ -6,17 +7,33 @@ import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
 from pygame import mixer
+import mutagen
 from mutagen.mp3 import MP3
 from PIL import ImageTk
 from tkinter import ttk# Normal Tkinter.* widgets are not themed!
 from tkinter.ttk import *
 from ttkthemes import ThemedTk
 import time 
-global song
-song = None
-tag=stagger.default_tag()
+
+
 root = ThemedTk(theme="adapta")
 root.config(bg='#F0FFFF')
+
+
+##################......VARIABLE......#######################
+song_len = 0
+
+
+
+##################......MUSIC PROGRESSBAR......########################
+p1 = ttk.Progressbar(root, length=200, cursor='spider',
+                     mode="determinate",
+                     orient=tk.HORIZONTAL)
+p1.pack(pady=185)
+
+
+
+#################.......VOLUME METHOD TO SET VOLUME........#############
 def set_vol(val):
     volume = float(val) / 100
     mixer.init()
@@ -24,12 +41,13 @@ def set_vol(val):
 
 
 
-#def play_time():
-#    current_time = pygame.mixer.music.get_pos()
-#    status_bar.config(text=current_time)
+###################.....CLASS.....#######################
 class MusicPlayer:
+
+#################.....METHOD TO INITIALIZE THE OBJECTS ON WINDOW......###########
+
     def __init__(self, window ):
-        window.geometry('240x400'); window.title('NEXUS Player'); window.resizable(100,100)
+        window.geometry('240x400'); window.title('NEXUS Player'); window.resizable(0,0)
 
         loadimg = PIL.Image.open("folder.png")
         loadimg = loadimg.resize((35, 35))
@@ -62,6 +80,7 @@ class MusicPlayer:
 
         self.playing_state = False
 
+############.....LOAD BUTTON METHOD.....##############
     def load(self):
         imageFile = PIL.Image.open("player.png")
         imageFile = imageFile.resize((215, 170))
@@ -71,32 +90,39 @@ class MusicPlayer:
         name=tk.Label(text = "                                                                                                                ").place(x=50,y=200)
         self.music_file = filedialog.askopenfilename(parent=root, title='Choose an audio File', filetypes=[(".mp3, .flac, .wav, .ogg", "*.mp3; *.flac;*.wav;*.ogg")])
         song = self.music_file
-        song_mut = MP3(song)
-        song_len = song_mut.info.length / 60
-        #ttk.Progressbar(root,length=220,orient='horizontal',value=50,mode='determinate').pack(pady=185)
+        song = os.path.basename(self.music_file)
+        song = song.replace(".mp3", "")
+        name=ttk.Label(text = song).place(x=50,y=200)
+        global song_len
+        song_mut = MP3(self.music_file)
+        song_len = int(song_mut.info.length)
 
-        #print(song_len)
+        ttk.Label(text = "Playing:").place(x=0,y=200)
+        
         mp3 = stagger.read_tag(self.music_file)
+        
         by_data = mp3[stagger.id3.APIC][0].data
         im = io.BytesIO(by_data)
         imageFile = PIL.Image.open(im)
         imageFile = imageFile.resize((215, 170))
         self.photo = ImageTk.PhotoImage(imageFile)
         
-        song = os.path.basename(self.music_file)
-        song = song.replace(".mp3", "")
         
-        ttk.Label(text = "Playing:").place(x=0,y=200)
-        name=ttk.Label(text = song).place(x=50,y=200)
+        
  
         p_img=ttk.Label(root, image = self.photo).place(x=10,y=10)
-            
+           
+############.....PLAY BUTTON METHOD.....##############
+
     def play(self):
         if self.music_file:
             mixer.init()
             mixer.music.load(self.music_file)
             mixer.music.play()
             pass
+
+############.....PAUSE BUTTON METHOD.....##############
+
     def pause(self):
         if not self.playing_state:
             mixer.music.pause()
@@ -105,22 +131,34 @@ class MusicPlayer:
             mixer.music.unpause()
             self.playing_state = False
 
+############.....STOP BUTTON METHOD.....##############
+
     def stop(self):
         mixer.music.stop()
 
-def increment(*args):
-    p1["value"] = mixer.music.get_pos()
-    root.update()
-    time.sleep(0.1)
-p1 = ttk.Progressbar(root, length=200, cursor='spider',
-                     mode="determinate",
-                     orient=tk.HORIZONTAL)
-p1.pack(pady=185)
-#btn = ttk.Button(root,text="Start",command=increment).pack(pady=0)
+############.....MUSIC PROGRESSBAR METHOD.....##############
+
+def progress():
+    mixer.init()
+    p1['maximum']= song_len
+    p1["value"] = mixer.music.get_pos()// 1000
+    
+    p1.after(2,progress)
+
+progress()       #....CALLING SELF METHOD
+
+############.....VOLUME SCALE.....##############
+
 scale = ttk.Scale(root, from_=100, to=0,length=140,orient=VERTICAL, command=set_vol)
+
 scale.place(x=20,y=225)
-scale.set(50)  # implement the default value of scale when music player starts
-mixer.init()
-mixer.music.set_volume(0.5)
+
+scale.set(50)        #... implement the default value of scale when music player starts
+
+mixer.init()    #...MIXER INITIALIZING
+
+mixer.music.set_volume(0.5)     #SET DEAFULT VOLUME
+
+
 app= MusicPlayer(root)
 root.mainloop()
