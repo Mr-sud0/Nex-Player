@@ -1,4 +1,4 @@
-###################.......DEPENDENCIES MODULES.......###################
+##################......DEPENDENCIES MODULES......##################
 import io
 import os
 import PIL.Image
@@ -10,30 +10,35 @@ from pygame import mixer
 import mutagen
 from mutagen.mp3 import MP3
 from PIL import ImageTk
-from tkinter import ttk# Normal Tkinter.* widgets are not themed!
+from tkinter import ttk                    # Normal Tkinter.* widgets are not themed!
 from tkinter.ttk import *
 from ttkthemes import ThemedTk
 import time 
 
+##############.......CREATING ROOT WINDOW.......###############
 
 root = ThemedTk(theme="adapta")
 root.config(bg='#F0FFFF')
+photo = PhotoImage(file = 'icon.png')
+root.iconphoto(False, photo)
 
+##################......VARIABLES......#######################
 
-##################......VARIABLE......#######################
 song_len = 0
 
 
 
 ##################......MUSIC PROGRESSBAR......########################
-p1 = ttk.Progressbar(root, length=200, cursor='spider',
+
+p1 = ttk.Progressbar(root, length=215, cursor='spider',
                      mode="determinate",
                      orient=tk.HORIZONTAL)
-p1.pack(pady=185)
+p1.pack(pady=190)
 
 
 
 #################.......VOLUME METHOD TO SET VOLUME........#############
+
 def set_vol(val):
     volume = float(val) / 100
     mixer.init()
@@ -42,6 +47,7 @@ def set_vol(val):
 
 
 ###################.....CLASS.....#######################
+
 class MusicPlayer:
 
 #################.....METHOD TO INITIALIZE THE OBJECTS ON WINDOW......###########
@@ -81,6 +87,7 @@ class MusicPlayer:
         self.playing_state = False
 
 ############.....LOAD BUTTON METHOD.....##############
+
     def load(self):
         imageFile = PIL.Image.open("player.png")
         imageFile = imageFile.resize((215, 170))
@@ -88,11 +95,14 @@ class MusicPlayer:
         p_img=ttk.Label(root, image = self.photo).place(x=10,y=10)
 
         name=tk.Label(text = "                                                                                                                ").place(x=50,y=200)
+        
         self.music_file = filedialog.askopenfilename(parent=root, title='Choose an audio File', filetypes=[(".mp3, .flac, .wav, .ogg", "*.mp3; *.flac;*.wav;*.ogg")])
         song = self.music_file
         song = os.path.basename(self.music_file)
         song = song.replace(".mp3", "")
+        
         name=ttk.Label(text = song).place(x=50,y=200)
+        
         global song_len
         song_mut = MP3(self.music_file)
         song_len = int(song_mut.info.length)
@@ -106,11 +116,7 @@ class MusicPlayer:
         imageFile = PIL.Image.open(im)
         imageFile = imageFile.resize((215, 170))
         self.photo = ImageTk.PhotoImage(imageFile)
-        
-        
-        
- 
-        p_img=ttk.Label(root, image = self.photo).place(x=10,y=10)
+        p_img = ttk.Label(root, image = self.photo).place(x=10,y=10)
            
 ############.....PLAY BUTTON METHOD.....##############
 
@@ -145,7 +151,7 @@ def progress():
     
     p1.after(2,progress)
 
-progress()       #....CALLING SELF METHOD
+progress()       #....METHOD CALLS ITSELF
 
 ############.....VOLUME SCALE.....##############
 
@@ -157,7 +163,7 @@ scale.set(50)        #... implement the default value of scale when music player
 
 mixer.init()    #...MIXER INITIALIZING
 
-mixer.music.set_volume(0.5)     #SET DEAFULT VOLUME
+mixer.music.set_volume(0.5)     #...SET DEAFULT VOLUME
 
 
 app= MusicPlayer(root)
