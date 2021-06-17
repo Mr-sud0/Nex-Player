@@ -13,6 +13,7 @@ from PIL import ImageTk
 from tkinter import ttk                    # Normal Tkinter.* widgets are not themed!
 from tkinter.ttk import *
 from ttkthemes import ThemedTk
+from tinytag import TinyTag
 import time 
 
 ##############.......CREATING ROOT WINDOW.......###############
@@ -97,17 +98,17 @@ class MusicPlayer:
         name=tk.Label(text = "                                                                                                                ").place(x=50,y=200)
         
         self.music_file = filedialog.askopenfilename(parent=root, title='Choose an audio File', filetypes=[(".mp3, .flac, .wav, .ogg", "*.mp3; *.flac;*.wav;*.ogg")])
+        s_len = TinyTag.get(self.music_file)
         song = self.music_file
         song = os.path.basename(self.music_file)
         song = song.replace(".mp3", "")
-        
+        ttk.Label(text = "Playing:").place(x=0,y=200)
         name=ttk.Label(text = song).place(x=50,y=200)
         
         global song_len
-        song_mut = MP3(self.music_file)
-        song_len = int(song_mut.info.length)
+        song_len = int(s_len.duration)
 
-        ttk.Label(text = "Playing:").place(x=0,y=200)
+        
         
         mp3 = stagger.read_tag(self.music_file)
         
