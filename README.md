@@ -6,6 +6,7 @@ Simple Music player written in Python
 * ttkthemes
 * stagger
 * pygame
+* tinytag
 * mutagen
 * Pillow
 
