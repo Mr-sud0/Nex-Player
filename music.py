@@ -10,7 +10,7 @@ from pygame import mixer
 import mutagen
 from mutagen.mp3 import MP3
 from PIL import ImageTk
-from tkinter import ttk                         # Normal Tkinter.* widgets are not themed!
+from tkinter import ttk               #..... Normal Tkinter.* widgets are not themed!
 from tkinter.ttk import *
 from ttkthemes import ThemedTk
 from tinytag import TinyTag
@@ -56,7 +56,7 @@ class MusicPlayer:
         s_load = s_load.resize((208, 208))
         self.m_load = ImageTk.PhotoImage(s_load)
         ttk.Label(root, image = self.m_load).place(x=10,y=5)
-        ttk.Label(text = "Select an audio file.",borderwidth=0).place(x=65,y=230)
+        tk.Label(text = "Select an audio file.",borderwidth=0, bg='#F0FFFF').place(x=65,y=230)
 
 
         loadimg = PIL.Image.open("folder.png")
@@ -93,7 +93,7 @@ class MusicPlayer:
 ############.....LOAD BUTTON METHOD.....##############
     def load(self):
         
-        tk.Label(text = "                                                                                                                ").place(x=50,y=230)
+        tk.Label(text = "                                                                                                                ",bg='#F0FFFF').place(x=50,y=230)
         self.music_file = filedialog.askopenfilename(parent=root, title='Choose an audio File', filetypes=[(".mp3, .flac, .wav, .ogg", "*.mp3; *.flac;*.wav;*.ogg")])
         s_len = TinyTag.get(self.music_file)
         song = self.music_file
@@ -105,8 +105,8 @@ class MusicPlayer:
         p_img=ttk.Label(root, image = self.photo).place(x=10,y=5)
 
         song = song.replace(".mp3", "")
-        ttk.Label(text = "Playing:").place(x=0,y=230)
-        name=ttk.Label(text = song).place(x=50,y=230)
+        tk.Label(text = "Playing:", bg='#F0FFFF').place(x=0,y=230)
+        name=tk.Label(text = song, bg='#F0FFFF').place(x=50,y=230)
         global song_len
         
         song_len = int(s_len.duration)
@@ -120,6 +120,9 @@ class MusicPlayer:
         imageFile = imageFile.resize((208, 208))
         self.photo = ImageTk.PhotoImage(imageFile)
         
+        
+        
+ 
         p_img=ttk.Label(root, image = self.photo).place(x=10,y=5)
            
 ############.....PLAY BUTTON METHOD.....##############
@@ -182,8 +185,6 @@ def progress():
     
 
 progress()       #....METHOD CALLS ITSELF
-
-
 ############.....VOLUME SCALE.....##############
 
 scale = ttk.Scale(root,variable= val, from_=100, to=0,length=150,orient=VERTICAL, command=set_vol)
@@ -191,9 +192,9 @@ scale = ttk.Scale(root,variable= val, from_=100, to=0,length=150,orient=VERTICAL
 scale.place(x=20,y=260)
 
 scale.set(50)        #... implement the default value of scale when music player starts
-mixer.init()    #... MIXER INITIALIZING
+mixer.init()    #...MIXER INITIALIZING
 
-mixer.music.set_volume(0.5)     #... SET DEAFULT VOLUME
+mixer.music.set_volume(0.5)     #SET DEAFULT VOLUME
 
 
 app= MusicPlayer(root)
