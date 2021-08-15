@@ -1,4 +1,4 @@
-# pymusic
+# Nex-Player
 Simple Music player written in Python
 
 ## Dependencies required to run this.
