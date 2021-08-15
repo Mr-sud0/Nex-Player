@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 ## Running the project
 ```
-git clone https://github.com/Mr-sud0/pymusic
-cd pymusic
+git clone https://github.com/Mr-sud0/Nex-Player
+cd Nex-Player
 python music.py
 ```
